@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <title>WEADER APP</title>
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" id="city-name" placeholder="Enter city name" spellcheck="false">
+            <button id="btn"><img src="images/search.png" alt="search icon"></button>
+        </div>
+        <div class="error">
+            <p>invalid name</p>
+        </div>
+        <div class="weader">
+            <img src="images/rain.png" class="image-icon" alt="imagem">
+            <h1 class="temp">22°c</h1>
+            <h2 class="city">New York</h2>
+            <div class="details">
+                <div class="col-1">
+                    <img src="images/humidity.png" alt="weader-icon">
+                    <div>
+                        <p class="humided">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <img src="images/wind.png" alt="weader-icon">
+                    <div>
+                        <p class="wind">15 km/h</p>
+                        <p>Wind speed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const ApiKey = "260fc6d9d34b1d644a17c19ecb8b9576"
+        const UrlApi = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
+        var cityName = document.getElementById("city-name")
+        var btnseacrh = document.getElementById("btn")
+        const imageIcon = document.querySelector(".image-icon")
+        const error = document.querySelector(".error")
+        const weader = document.querySelector(".weader")
+
+        async function checkWeader(cityName){
+            const responde = await fetch(UrlApi + cityName + `&appid=${ApiKey}`)
+            const data = await responde.json()
+            if(responde.status == 404){
+                error.style.display = "block"
+                weader.style.display = "none"
+            }
+            const city = document.querySelector(".city")
+            const temperatura = document.querySelector(".temp")
+            const humidade = document.querySelector(".humided")
+            const wind = document.querySelector(".wind")
+            
+
+            city.innerHTML = `${data.name}`
+            temperatura.innerHTML = `${Math.round(data.main.temp)}°c`
+            humidade.innerHTML = `${data.main.humidity}%`
+            wind.innerHTML = `${data.wind.speed}km/h`
+
+            if(data.weather[0].main == "Rain"){
+                imageIcon.src = "images/rain.png"
+            }else if(data.weather[0].main == "Clouds"){
+                imageIcon.src = "images/clouds.png"
+            }else if(data.weather[0].main == "Clear"){
+                imageIcon.src = "images/clear.png"
+            }else if(data.weather[0].main == "Snow"){
+                imageIcon.src = "images/snow.png"
+            }else if(data.weather[0].main == "Mist"){
+                imageIcon.src = "images/mist.png"
+            }else if(data.weather[0].main == "Drizzle"){
+                imageIcon.src = "images/drizzle.png"
+            }
+            document.querySelector(".weader").style.display = "block";
+            error.style.display = "none"
+        }
+
+        btnseacrh.addEventListener("click", () =>{
+            checkWeader(cityName.value)
+        })
+        
+    </script>
+</body>
+</html>
